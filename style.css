@@ -1,0 +1,86 @@
+body {
+  padding: 59px;
+}
+
+#navbar {
+  font-family: Consolas;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#navbarHeader {
+  background-color: #0e8ea8;
+  color: #fff;
+}
+
+#navbarItem {
+  background-color: #83d1e1;
+  color: #212529;
+}
+
+a:visited {
+  color: #fff;
+}
+
+#logo {
+  float: left;
+  left: 0;
+  top: 0;
+  padding: 0px;
+  margin: 0px;
+}
+
+h2 {
+  text-align: center;
+  font-family: Calibri;
+  color: #212529;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px;
+}
+
+thead {
+  background-color: #0e8ea8;
+  font-family: Consolas;
+  color: #fff;
+}
+
+#staffT {
+  background-color: #83d1e1;
+  color: #212529;
+  font-family: Calibri;
+}
+
+table {
+  border-color: #212529;
+  border-width: thin;
+  text-align: center;
+  border-style: solid;
+  margin: auto;
+}
+
+#scheduleTable {
+  position: relative;
+  text-align: center;
+}
+
+body {
+  font-family: Calibri;
+  background-color: #83d1e1;
+  color: #212529;
+}
+
+#greenButton {
+  background-color: #198754;
+  color: #fff;
+  font-family: Consolas;
+}
+
+#redButton {
+  background-color: #dc3545;
+  color: #fff;
+  font-family: Consolas;
+}
