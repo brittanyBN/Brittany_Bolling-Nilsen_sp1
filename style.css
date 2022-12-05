@@ -53,6 +53,13 @@ thead {
   color: #212529;
   font-family: Calibri;
 }
+#staffT td:hover {
+  cursor: pointer;
+}
+
+#staffT tr:hover {
+  background-color: #0e8ea8;
+}
 
 table {
   border-color: #212529;

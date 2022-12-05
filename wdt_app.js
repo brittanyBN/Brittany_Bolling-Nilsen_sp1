@@ -29,7 +29,7 @@ class StaffMember extends Employee {
   }
 }
 
-$("document").ready(function () {
+$("document").ready(function staffUserGet() {
   const staffMembers = [];
 
   for (let i = 0; i < 5; i++) {
@@ -47,7 +47,7 @@ $("document").ready(function () {
         staffMembers.push(newStaff);
         console.log(newStaff);
         $("#staffT").append(
-          "<tr id='staffUpdate'><td>" +
+          "<tr><td>" +
             `<img src='${picture}' height='50px' width='50px' alt='staff picture'>` +
             "</td><td>" +
             `${name}` +
@@ -57,7 +57,7 @@ $("document").ready(function () {
             `${email}` +
             "</td>" +
             "<td id='status'></td>" +
-            "<td id='outTime'>/td>" +
+            "<td id='outTime'></td>" +
             "<td id='duration'></td>" +
             "<td id='returnTime'></td>" +
             "</tr>"
@@ -66,6 +66,43 @@ $("document").ready(function () {
     });
   }
 });
+
+$("td").click(function () {
+  $(".selected").removeClass("selected");
+  $(this).addClass("selected");
+});
+
+// $(document).ready(function () {
+//   $("#staffTable tr").click(function () {
+//     $(this).addClass("selected").siblings().removeClass("selected");
+//     var value = $(this).find("td:first").html();
+//     alert(value);
+//   });
+//   $(".staffOut").on("click", function (e) {
+//     alert($("staffTable tr.selected td:first").html());
+//   });
+// });
+
+// $(document).ready(function () {
+//   $("#staffTable tr td").click(function () {
+//     $("#staffTable tr td").removeClass("selected");
+//     $(this).addClass("selected");
+//   });
+// });
+
+// $("#staffTable tr").click(function () {
+//   $(this).addClass("selected").siblings().removeClass("selected");
+//   var value = $(this).find("td:first").html();
+//   alert(value);
+// });
+
+// $(".staffOut").on("click", function (e) {
+//   alert($("#staffTable tr.selected td:first").html());
+// });
+
+// $(".staffOut").on("click", function (e) {
+//   alert($("#staffTable tr.selected td:first").html());
+// });
 
 // let selectedUser;
 
@@ -108,69 +145,71 @@ class DeliveryDriver extends Employee {
   }
 }
 
+const deliveryDriver = [];
+
 function deliveryInput() {
-  const vehicle = document.forms.deliveryForm.Vehicle.value;
-  const name = document.forms.deliveryForm.Name.value;
-  const surname = document.forms.deliveryForm.Surname.value;
-  const telephone = document.forms.deliveryForm.Telephone.value;
-  const deliveryAddress = document.forms.deliveryForm.DeliveryAddress.value;
-  const returnTime = document.forms.deliveryForm.ReturnTime.value;
+  const vehicle = document.getElementById("vehicle").value;
+  const name = document.getElementById("name").value;
+  const surname = document.getElementById("surname").value;
+  const telephone = document.getElementById("telephone").value;
+  const deliveryAddress = document.getElementById("address").value;
+  const returnTime = document.getElementById("returnTime").value;
   const regPhone = /^\d{10}$/;
   const regName = /\d+$/g;
+  const newDeliveryDriver = new DeliveryDriver(
+    vehicle,
+    surname,
+    name,
+    telephone,
+    deliveryAddress,
+    returnTime
+  );
+  deliveryDriver.push(newDeliveryDriver);
+  console.log(newDeliveryDriver);
 
   if (vehicle == "" || !vehicle == "motorcycle" || !vehicle == "car") {
-    window.alert('Please enter "motorcyle" or "car".');
-    vehicle.focus();
+    alert('Please enter "motorcyle" or "car".');
     return false;
   }
 
   if (name == "" || regName.test(name)) {
-    window.alert("Please enter your name properly.");
-    name.focus();
+    alert("Please enter your name properly.");
     return false;
   }
 
   if (surname == "" || regName.test(surname)) {
-    window.alert("Please enter your surname properly.");
-    name.focus();
+    alert("Please enter your surname properly.");
     return false;
   }
 
-  if (telephone == "" || !regPhone.test(phone)) {
+  if (telephone == "" || !regPhone.test(telephone)) {
     alert("Please enter valid phone number.");
-    phone.focus();
     return false;
   }
 
   if (deliveryAddress == "") {
-    window.alert("Please enter your address.");
-    address.focus();
+    alert("Please enter your address.");
     return false;
   }
 
-  if (returnTime == "" || !regEmail.test(email)) {
-    window.alert("Please enter a valid return time.");
-    email.focus();
+  if (returnTime == "") {
+    alert("Please enter a valid return time.");
     return false;
   }
 
-  return true;
+  $("#deliveryT").append(
+    "<tr><td>" +
+      `${vehicle}` +
+      "</td><td>" +
+      `${name}` +
+      "</td><td>" +
+      `${surname}` +
+      "</td><td>" +
+      `${telephone}` +
+      "</td><td>" +
+      `${deliveryAddress}` +
+      "</td><td>" +
+      `${returnTime}` +
+      "</td></tr>"
+  );
 }
-
-document.getElementsByClassName(".addDelivery").onclick = function () {
-  document.getElementsByClassName(".deliveryInput").style.display = "block";
-
-  var table = document.getElementsByClassName(".deliveryInput");
-  var row = table.insertRow(-1);
-  var vehicle = row.insertCell(0);
-  var name = row.insertCell(1);
-  var surname = row.insertCell(2);
-  var telephone = row.insertCell(3);
-  var deliverAddress = row.insertCell(4);
-  var returnTime = row.insertCell(5);
-  date.innerHTML = document.getElementById("vehicle").value;
-  desc.innerHTML = document.getElementById("name").value;
-  amt.innerHTML = document.getElementById("").value;
-
-  return false;
-};
