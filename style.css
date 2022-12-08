@@ -72,6 +72,7 @@ table {
 #scheduleTable {
   position: relative;
   text-align: center;
+  background-color: #83d1e1;
 }
 
 body {
@@ -80,14 +81,47 @@ body {
   color: #212529;
 }
 
-#greenButton {
+.staffIn {
+  float: right;
+  right: 0;
+}
+
+#staffIn {
   background-color: #198754;
   color: #fff;
   font-family: Consolas;
 }
 
-#redButton {
+#staffOut {
   background-color: #dc3545;
   color: #fff;
   font-family: Consolas;
+}
+
+#addDelivery {
+  background-color: #198754;
+  color: #fff;
+  font-family: Consolas;
+}
+
+#clearDelivery {
+  background-color: #dc3545;
+  color: #fff;
+  font-family: Consolas;
+}
+
+#date {
+  text-align: right;
+}
+
+.selected {
+  background-color: #0e8ea8;
+}
+
+#deliveryT tr:hover {
+  background-color: #0e8ea8;
+}
+
+#deliveryT {
+  background-color: #83d1e1;
 }
