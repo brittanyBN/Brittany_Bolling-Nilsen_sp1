@@ -24,8 +24,8 @@ class StaffMember extends Employee {
     this.duration = "";
     this.expectedReturnTime = "";
   }
-  staffMemberIsLate() {
-    return `${this.name} is late. Show a toast`;
+  staffMemberIsLate(toast) {
+    alert(toast);
   }
 }
 
@@ -74,10 +74,10 @@ function staffUserGet() {
             "</td><td>" +
             `${email}` +
             "</td>" +
-            "<td id='status'>--</td>" +
-            "<td id='outTime'></td>" +
-            "<td id='duration'></td>" +
-            "<td id='returnTime'></td>" +
+            "<td>--</td>" +
+            "<td></td>" +
+            "<td></td>" +
+            "<td></td>" +
             "</tr>"
         );
       },
@@ -154,7 +154,6 @@ $("document").ready(function () {
       const staffMember = staffMembers.find(
         (staffMember) => staffMember.email === email
       );
-      console.log(staffMember);
 
       //Update status in table and in object
       let status = $(this).find("td:eq(4)").text();
@@ -162,48 +161,61 @@ $("document").ready(function () {
       console.log(status);
       $(this).find("td:eq(4)").text("Out");
 
-      //Prompt receptionist for return time, update table with answer and update object
-      let leaveT = prompt("What time will the staff member leave? hh:mm");
+      // Prompt the user for the time.
+      let leaveT = prompt("Enter the time (hh:mm):");
 
       //If statement to validate time
+      if (/^\d\d:\d\d$/.test(leaveT)) {
+        // Time is in correct format.
+        let leaveTime = $(this).find("td:eq(5)").text(leaveT);
+        staffMember.leaveTime = leaveT;
+        console.log(leaveTime);
+        $(this).find("td:eq(5)").text(leaveT);
+      } else {
+        // Time is not in correct format.
+        alert("Please enter the time in the correct format (hh:mm)");
+        // Prompt the user again for the time.
+        leaveT = prompt("Enter the time (hh:mm):");
+        let leaveTime = $(this).find("td:eq(5)").text(leaveT);
+        staffMember.leaveTime = leaveT;
+        console.log(leaveTime);
+        $(this).find("td:eq(5)").text(leaveT);
+      }
 
-      let leaveTime = $(this).find("td:eq(5)").text(leaveT);
-      staffMember.leaveTime = leaveT;
-      console.log(leaveTime);
-      $(this).find("td:eq(5)").text(leaveT);
-
-      //Prompt receptionist for return time, update table with answer and update object
-      let returnT = prompt("What time will the staff member return? hh:mm");
-
-      //If statement to validate time
-
-      let returnTime = $(this).find("td:eq(7)").text(returnT);
-      staffMember.returnTime = returnT;
-      console.log(returnTime);
-      $(this).find("td:eq(7)").text(returnT);
-
-      //Prompt receptionist for out time, update table with answer and update object
-      // let outT = prompt("What time did the staff member leave? hh:mm");
-      // let outTime = $(this).find("td:eq(5)").text(outT);
-      // staffMember.outTime = outT;
-      // console.log(outTime);
-      // $(this).find("td:eq(5)").text(outT);
-
-      //Calculate duration of time staff member is out
-      let arrayReturnT = returnT.split(":");
-      console.log(arrayReturnT);
-      let arrayLeaveT = leaveT.split(":");
-      console.log(arrayLeaveT);
-      let hours = arrayReturnT[0] - arrayLeaveT[0];
-      console.log(hours);
-      let minutes = arrayReturnT[1] - arrayLeaveT[1];
-      console.log(minutes);
-      let durationT = hours + " hours and " + minutes + " minutes";
-      console.log(durationT);
-      let durationTime = $(this).find("td:eq(6)").text(durationT);
-      staffMember.durationTime = durationT;
-      console.log(durationTime);
-      $(this).find("td:eq(6)").text(durationT);
+      let durationMinutes = prompt(
+        "How many minutes will the staff member be out?"
+      );
+      if (isNaN(durationMinutes) === true || durationMinutes <= 0) {
+        alert("Please enter a valid number of minutes!");
+        prompt("How many minutes will the staff member be out?");
+      } else if (isNaN(durationMinutes) !== true && durationMinutes > 0) {
+        if (durationMinutes > 60) {
+          let durationHours = Math.floor(durationMinutes / 60);
+          let durationMin = durationMinutes % 60;
+          let durationT =
+            durationHours + " hours and " + durationMin + " minutes";
+          console.log(durationT);
+          let durationTime = $(this).find("td:eq(6)").text(durationT);
+          staffMember.durationTime = durationT;
+          console.log(durationTime);
+          $(this).find("td:eq(6)").text(durationT);
+          let arrayLeaveT = leaveT.split(":");
+          console.log(arrayLeaveT);
+          let hours = parseInt(arrayLeaveT[0]) + parseInt(durationHours);
+          console.log(hours);
+          let minutes = parseInt(arrayLeaveT[1]) + parseInt(durationMin);
+          if (minutes < 10) {
+            minutes = "0" + minutes;
+          }
+          console.log(minutes);
+          let returnT = hours + ":" + minutes;
+          console.log(durationT);
+          let returnTime = $(this).find("td:eq(7)").text(returnT);
+          staffMember.returnTime = returnT;
+          console.log(returnTime);
+          $(this).find("td:eq(7)").text(returnT);
+        }
+      }
     });
   });
 
