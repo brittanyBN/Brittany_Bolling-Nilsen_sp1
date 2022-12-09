@@ -3,7 +3,7 @@ body {
 }
 
 #navbar {
-  font-family: Consolas;
+  font-family: Consolas, "Courier New", monospace;
   width: 100%;
   position: absolute;
   top: 0;
@@ -44,7 +44,7 @@ h2 {
 
 thead {
   background-color: #0e8ea8;
-  font-family: Consolas;
+  font-family: Consolas, "Courier New", monospace;
   color: #fff;
 }
 
@@ -81,33 +81,31 @@ body {
   color: #212529;
 }
 
-.staffIn {
-  float: right;
-  right: 0;
-}
-
 #staffIn {
   background-color: #198754;
   color: #fff;
-  font-family: Consolas;
+  font-family: Consolas, "Courier New", monospace;
+  margin-left: 1250px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 #staffOut {
   background-color: #dc3545;
   color: #fff;
-  font-family: Consolas;
+  font-family: Consolas, "Courier New", monospace;
 }
 
 #addDelivery {
   background-color: #198754;
   color: #fff;
-  font-family: Consolas;
+  font-family: Consolas, "Courier New", monospace;
 }
 
 #clearDelivery {
   background-color: #dc3545;
   color: #fff;
-  font-family: Consolas;
+  font-family: Consolas, "Courier New", monospace;
 }
 
 #date {

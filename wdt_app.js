@@ -136,6 +136,58 @@ function clock(type) {
   return;
 }
 
+function deliveryInput() {
+  let error = 0;
+
+  if (vehicle === "" || vehicle != "motorcycle" || vehicle != "car") {
+    alert('Please enter "motorcyle" or "car".');
+    error++;
+  } else if (vehicle === "car") {
+    var cell = $("#vehicle");
+    cell.text('<i class="bi bi-car-front"></i>');
+  }
+
+  if (name == "" || regName.test(name)) {
+    alert("Please enter your name properly.");
+    error++;
+  }
+
+  if (surname == "" || regName.test(surname)) {
+    alert("Please enter your surname properly.");
+    error++;
+  }
+
+  if (telephone == "" || !regPhone.test(telephone)) {
+    alert("Please enter valid phone number.");
+    error++;
+  }
+
+  if (deliveryAddress == "") {
+    alert("Please enter your address.");
+    error++;
+  }
+
+  if (returnTime == "") {
+    alert("Please enter a valid return time.");
+    error++;
+  }
+
+  console.log(error);
+
+  if (error === 0) {
+    const newDeliveryDriver = new DeliveryDriver(
+      vehicle,
+      surname,
+      name,
+      telephone,
+      deliveryAddress,
+      returnTime
+    );
+    deliveryDrivers.push(newDeliveryDriver);
+    console.log(newDeliveryDriver);
+  }
+}
+
 $("document").ready(function () {
   staffUserGet();
 
@@ -255,6 +307,9 @@ $("document").ready(function () {
 
   $("#addDelivery").click(function () {
     let vehicle = $("#vehicle").val();
+    const regVehicle = /^(motorcycle|car)$/;
+    console.log(vehicle);
+    let vehicleIcon = "";
     const name = $("#name").val();
     const surname = $("#surname").val();
     const telephone = $("#telephone").val();
@@ -264,14 +319,17 @@ $("document").ready(function () {
     const regName = /\d+$/g;
 
     let error = 0;
-
-    if (vehicle == "" || !vehicle == "motorcycle" || !vehicle == "car") {
-      alert('Please enter "motorcyle" or "car".');
-    } else if (vehicle === "car") {
-      var cell = $("#vehicle");
-      cell.text('<i class="bi bi-car-front"></i>');
-    }
-
+    $("#addDelivery").each(function () {
+      if (vehicle == "" || !regVehicle.test(vehicle)) {
+        alert('Please enter "motorcyle" or "car".');
+        error++;
+      }
+      if (vehicle === "car") {
+        vehicleIcon = '<i class="bi bi-car-front"></i>';
+      } else if (vehicle === "motorcycle") {
+        vehicleIcon = '<i class="bi bi-bicycle"></i>';
+      }
+    });
     if (name == "" || regName.test(name)) {
       alert("Please enter your name properly.");
       error++;
@@ -312,8 +370,8 @@ $("document").ready(function () {
       console.log(newDeliveryDriver);
 
       $("#deliveryT").append(
-        "<tr><td>" +
-          `${vehicle}` +
+        "<tr><td id='iconCell'>" +
+          `${vehicleIcon}` +
           "</td><td>" +
           `${name}` +
           "</td><td>" +
@@ -326,20 +384,28 @@ $("document").ready(function () {
           `${returnTime}` +
           "</td></tr>"
       );
-    }
 
-    $("#deliveryTable tbody").on("click", "tr", function () {
-      $(this).toggleClass("selected");
-    });
-    $("#clearDelivery").click(function () {
-      // Identify correct staff member by matching their unique email to the selected user.
-      $("#deliveryTable .selected").each(function () {
-        let telephone = $(this).find("td:eq(3)").text();
-        const deliveryDriver = deliveryDrivers.find(
-          (deliveryDriver) => deliveryDriver.telephone === telephone
-        );
-        $("tr").filter(".selected").remove();
+      $("#deliveryTable tbody").on("click", "tr", function () {
+        $(this).toggleClass("selected");
       });
-    });
+      $("#clearDelivery").click(function () {
+        // Identify correct staff member by matching their unique email to the selected user.
+        $("#deliveryTable .selected").each(function () {
+          let telephone = $(this).find("td:eq(3)").text();
+          const deliveryDriver = deliveryDrivers.find(
+            (deliveryDriver) => deliveryDriver.telephone === telephone
+          );
+
+          if (
+            confirm("Are you sure you want to remove this delivery driver?")
+          ) {
+            $("tr").filter(".selected").remove();
+            deliveryDriver.deliveryDrivers = deliveryDriver;
+          } else {
+            $(this).removeClass("selected");
+          }
+        });
+      });
+    }
   });
 });
