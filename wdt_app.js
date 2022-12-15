@@ -6,16 +6,7 @@ class Employee {
 }
 
 class StaffMember extends Employee {
-  constructor(
-    name,
-    surname,
-    picture,
-    email,
-    status,
-    outTime,
-    duration,
-    expectedReturnTime
-  ) {
+  constructor(name, surname, picture, email) {
     super(name, surname);
     this.picture = picture;
     this.email = email;
@@ -24,11 +15,18 @@ class StaffMember extends Employee {
     this.duration = "";
     this.expectedReturnTime = "";
   }
-  staffMemberIsLate(toast) {
-    alert(toast);
-  }
+  staffMemberIsLate() {
+    // var time = new Date();
+    // if(this.expectedReturnTime > time) {
+    $("#toastInfo").append(
+      `<p><img src='${this.picture}' height='50px' width='50px' alt='staff picture'></p>
+      <p>Staff Member: ${this.name} ${this.surname}</p>
+      <p>Duration Out: ${this.duration}</p>`
+    )
+    $("#liveToast").toast("show")
+    }
+  //}
 }
-
 class DeliveryDriver extends Employee {
   constructor(vehicle, name, surname, telephone, deliverAddress, returnTime) {
     super(name, surname);
@@ -40,17 +38,14 @@ class DeliveryDriver extends Employee {
   deliveryDriverIsLate() {
     return `${this.name} is late. Show a toast`;
   }
-  clearDriver() {
-    return "clear the selected row";
-  }
 }
 
 const staffMembers = [];
 const deliveryDrivers = [];
-const status = [];
+const staffTable = 5;
 
 function staffUserGet() {
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < staffTable; i++) {
     $.ajax({
       url: "https://randomuser.me/api/",
       type: "GET",
@@ -63,35 +58,34 @@ function staffUserGet() {
         const email = user.email;
         const newStaff = new StaffMember(name, surname, picture, email);
         staffMembers.push(newStaff);
-        console.log(newStaff);
         $("#staffT").append(
           "<tr><td>" +
-            `<img src='${picture}' height='50px' width='50px' alt='staff picture'>` +
-            "</td><td>" +
-            `${name}` +
-            "</td><td>" +
-            `${surname}` +
-            "</td><td>" +
-            `${email}` +
-            "</td>" +
-            "<td>--</td>" +
-            "<td></td>" +
-            "<td></td>" +
-            "<td></td>" +
-            "</tr>"
+          `<img src='${picture}' height='50px' width='50px' alt='staff picture'>` +
+          "</td><td>" +
+          `${name}` +
+          "</td><td>" +
+          `${surname}` +
+          "</td><td>" +
+          `${email}` +
+          "</td>" +
+          "<td>In</td>" +
+          "<td class='time'></td>" +
+          "<td></td>" +
+          "<td></td>" +
+          "</tr>"
         );
       },
     });
   }
 }
 
-function clock(type) {
+function digitalClock(type) {
   const date = new Date();
   let hours = date.getHours();
   let minutes = date.getMinutes();
   let seconds = date.getSeconds();
-  let day = date.getDay();
-  let month = date.getMonth();
+  let day = date.getDate();
+  let month = date.getMonth() + 1;
   let year = date.getFullYear();
 
   if (hours < 10) {
@@ -119,196 +113,139 @@ function clock(type) {
   }
 
   if (type === "time") {
-    return (
-      day +
-      "/" +
-      month +
-      "/" +
-      year +
-      " " +
-      hours +
-      ":" +
-      minutes +
-      " " +
-      seconds
-    );
+    return (day + "/" + month + "/" + year + " " + hours + ":" + minutes + " " + seconds);
   }
   return;
 }
 
-function deliveryInput() {
-  let error = 0;
+function staffOut() {
+$("#staffTable .selected").each(function(){
+  let email = $(this).find("td:eq(3)").text();
+ 
+  const staffMember =  staffMembers.find(staffMember => staffMember.email === email);
 
-  if (vehicle === "" || vehicle != "motorcycle" || vehicle != "car") {
-    alert('Please enter "motorcyle" or "car".');
-    error++;
-  } else if (vehicle === "car") {
-    var cell = $("#vehicle");
-    cell.text('<i class="bi bi-car-front"></i>');
+    //Update status in table and in object
+    staffMember.status = $(this).find("td:eq(4)").text("Out");
+
+    // Prompt the user for the time.
+    let leaveT = prompt("Enter the time (hh:mm):");
+
+    //If statement to validate time
+      if (leaveT.match(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/)) {
+      // If time is in correct format.
+      staffMember.outTime = $(this).find("td:eq(5)").text(leaveT);
+       // Promt user for the duration in minutes
+    let durationMinutes = prompt(`How many minutes will ${staffMember.name} be out?`);
+
+    // If the user input an invalid number of minutes
+    if (isNaN(durationMinutes) === true || durationMinutes <= 0) {
+      alert("Please enter a valid number of minutes!");
+      prompt(`How many minutes will ${staffMember.name} be out?`);
+
+      // If the user input a valid number of minutes
+    } else if (isNaN(durationMinutes) !== true && durationMinutes > 0) {
+      if (durationMinutes >= 60) {
+        // Calculate number of hours and minutes staff member is away
+        let durationHours = Math.floor(durationMinutes / 60);
+        let durationMin = durationMinutes % 60;
+        let durationT = durationHours + "hr " + durationMin + "min";
+      
+
+        // Populate table with duration staff member is away
+        staffMember.duration = $(this).find("td:eq(6)").text(durationT);
+        
+  
+        $(this).find("td:eq(6)").text(durationT);
+        let arrayLeaveT = leaveT.split(":");
+       
+        let hours = parseInt(arrayLeaveT[0]) + parseInt(durationHours);
+        if (hours > 23) {
+          prompt("Please enter a valid time!");
+        }
+      
+        let minutes = parseInt(arrayLeaveT[1]) + parseInt(durationMin);
+        if (minutes < 10) {
+          minutes = "0" + minutes;
+        }
+       
+
+        // Add time staff member is expected to return
+        let returnT = hours + ":" + minutes;
+       
+        staffMember.expectedReturnTime = $(this).find("td:eq(7)").text(returnT);
+    
+        
+        let returntTime = $(this).find("td:eq(7)").text(returnT);
+        console.log(returntTime);
+        $(this).removeClass("selected");
+      } else if (durationMinutes < 60) {
+         // Populate table with duration staff member is away
+         staffMember.duration = $(this).find("td:eq(6)").text(durationMinutes);
+        
+  
+         $(this).find("td:eq(6)").text(durationMinutes);
+         let arrayLeaveT = leaveT.split(":");
+        
+         let hours = parseInt(arrayLeaveT[0])
+        //  let hours = parseInt(arrayLeaveT[0]) + parseInt(durationHours);
+        //  if (hours > 23) {
+        //    prompt("Please enter a valid time!");
+        //  }
+       
+         let minutes = parseInt(arrayLeaveT[1]) + parseInt(durationMinutes);
+         if (minutes < 10) {
+           minutes = "0" + minutes;
+         }
+        
+ 
+         // Add time staff member is expected to return
+         let returnT = hours + ":" + minutes;
+        
+         staffMember.expectedReturnTime = $(this).find("td:eq(7)").text(returnT);
+     
+         
+         $(this).find("td:eq(7)").text(returnT);
+         $(this).removeClass("selected");
+      }
+    }
+  } else {
+      // If time is not in correct format.
+      alert("Please enter the time in the correct format (hh:mm)");
+
+      // Prompt the user again for the time.
+      leaveT = prompt("Enter the time (hh:mm):");
+      staffMember.outTime = $(this).find("td:eq(5)").text(leaveT);
   }
-
-  if (name == "" || regName.test(name)) {
-    alert("Please enter your name properly.");
-    error++;
+  let lateStaffMember =  staffMembers.find(staffMember => staffMember.expectedReturnTime);
+  console.log(lateStaffMember);
+  let lateStaff = lateStaffMember.expectedReturnTime;
+  if(lateStaff > digitalClock("currentTime")){
+  staffMember.staffMemberIsLate();
+  console.log(lateStaff);
+  console.log(digitalClock("currentTime"));
   }
-
-  if (surname == "" || regName.test(surname)) {
-    alert("Please enter your surname properly.");
-    error++;
-  }
-
-  if (telephone == "" || !regPhone.test(telephone)) {
-    alert("Please enter valid phone number.");
-    error++;
-  }
-
-  if (deliveryAddress == "") {
-    alert("Please enter your address.");
-    error++;
-  }
-
-  if (returnTime == "") {
-    alert("Please enter a valid return time.");
-    error++;
-  }
-
-  console.log(error);
-
-  if (error === 0) {
-    const newDeliveryDriver = new DeliveryDriver(
-      vehicle,
-      surname,
-      name,
-      telephone,
-      deliveryAddress,
-      returnTime
-    );
-    deliveryDrivers.push(newDeliveryDriver);
-    console.log(newDeliveryDriver);
-  }
+});
 }
 
-$("document").ready(function () {
-  staffUserGet();
 
-  setInterval(function () {
-    $("#date").text(clock("time"));
-  }, 1000);
+function staffIn() {
+$("#staffTable .selected").each(function () {
+  let email = $(this).find("td:eq(3)").text();
+  const staffMember = staffMembers.find(
+    (staffMember) => staffMember.email === email
+  );
+  staffMember.status = $(this).find("td:eq(4)").text("In");
+  staffMember.leave = $(this).find("td:eq(5)").text("");
+  staffMember.duration = $(this).find("td:eq(6)").text("");
+  staffMember.returnT = $(this).find("td:eq(7)").text("");
+ 
+  $(this).removeClass("selected");
+});
+}
 
-  $("#staffTable tbody").on("click", "tr", function () {
-    $(this).toggleClass("selected");
-  });
-
-  $("#staffOut").click(function () {
-    // Identify correct staff member by matching their unique email to the selected user.
-    $("#staffTable .selected").each(function () {
-      let email = $(this).find("td:eq(3)").text();
-      const staffMember = staffMembers.find(
-        (staffMember) => staffMember.email === email
-      );
-
-      //Update status in table and in object
-
-      staffMember.status = $(this).find("td:eq(4)").text("Out");
-
-      // Prompt the user for the time.
-      let leaveT = prompt("Enter the time (hh:mm):");
-
-      //If statement to validate time
-      if (/^\d\d:\d\d$/.test(leaveT)) {
-        // If time is in correct format.
-        staffMember.outTime = $(this).find("td:eq(5)").text(leaveT);
-      } else {
-        // If time is not in correct format.
-        alert("Please enter the time in the correct format (hh:mm)");
-
-        // Prompt the user again for the time.
-        leaveT = prompt("Enter the time (hh:mm):");
-        staffMember.outTime = $(this).find("td:eq(5)").text(leaveT);
-      }
-      // Promt user for the duration in minutes
-      let durationMinutes = prompt(
-        "How many minutes will the staff member be out?"
-      );
-
-      // If the user input an invalid number of minutes
-      if (isNaN(durationMinutes) === true || durationMinutes <= 0) {
-        alert("Please enter a valid number of minutes!");
-        prompt("How many minutes will the staff member be out?");
-
-        // If the user input a valid number of minutes
-      } else if (isNaN(durationMinutes) !== true && durationMinutes > 0) {
-        if (durationMinutes >= 60) {
-          // Calculate number of hours and minutes staff member is away
-          let durationHours = Math.floor(durationMinutes / 60);
-          let durationMin = durationMinutes % 60;
-          let durationT = durationHours + "hr " + durationMin + "min";
-          console.log(durationT);
-
-          // Populate table with duration staff member is away
-          let durationTime = $(this)
-            .find("td:eq(6)")
-            .text(staffMember.durationTime);
-          staffMember.durationTime = durationT;
-          console.log(durationTime);
-          $(this).find("td:eq(6)").text(durationT);
-          let arrayLeaveT = leaveT.split(":");
-          console.log(arrayLeaveT);
-          let hours = parseInt(arrayLeaveT[0]) + parseInt(durationHours);
-          if (hours > 23) {
-            prompt("Please enter a valid time!");
-          }
-          console.log(hours);
-          let minutes = parseInt(arrayLeaveT[1]) + parseInt(durationMin);
-          if (minutes < 10) {
-            minutes = "0" + minutes;
-          }
-          console.log(minutes);
-
-          // Add time staff member is expected to return
-          let returnT = hours + ":" + minutes;
-          console.log(durationT);
-          let returnTime = $(this).find("td:eq(7)").text(returnT);
-          staffMember.returnTime = returnT;
-          console.log(returnTime);
-          $(this).find("td:eq(7)").text(returnT);
-          $(this).removeClass("selected");
-        }
-      }
-    });
-  });
-
-  $("#staffIn").click(function () {
-    // Identify correct staff member by matching their unique email to the selected user.
-    $("#staffTable .selected").each(function () {
-      let email = $(this).find("td:eq(3)").text();
-      const staffMember = staffMembers.find(
-        (staffMember) => staffMember.email === email
-      );
-      let status = $(this).find("td:eq(4)").text();
-      staffMember.status = "In";
-      console.log(status);
-      $(this).find("td:eq(4)").text("In");
-      let leave = $(this).find("td:eq(5)").text();
-      staffMember.leave = "";
-      console.log(leave);
-      $(this).find("td:eq(5)").text("");
-      let duration = $(this).find("td:eq(6)").text();
-      staffMember.duration = "";
-      console.log(duration);
-      $(this).find("td:eq(6)").text("");
-      let returnT = $(this).find("td:eq(7)").text();
-      staffMember.returnT = "";
-      console.log(returnT);
-      $(this).find("td:eq(7)").text("");
-      $(this).removeClass("selected");
-    });
-  });
-
-  $("#addDelivery").click(function () {
+function addDelivery() {
     let vehicle = $("#vehicle").val();
     const regVehicle = /^(motorcycle|car)$/;
-    console.log(vehicle);
     let vehicleIcon = "";
     const name = $("#name").val();
     const surname = $("#surname").val();
@@ -355,8 +292,6 @@ $("document").ready(function () {
       error++;
     }
 
-    console.log(error);
-
     if (error === 0) {
       const newDeliveryDriver = new DeliveryDriver(
         vehicle,
@@ -367,7 +302,6 @@ $("document").ready(function () {
         returnTime
       );
       deliveryDrivers.push(newDeliveryDriver);
-      console.log(newDeliveryDriver);
 
       $("#deliveryT").append(
         "<tr><td id='iconCell'>" +
@@ -384,28 +318,56 @@ $("document").ready(function () {
           `${returnTime}` +
           "</td></tr>"
       );
+  }
+  console.log(deliveryDrivers);
+}
 
-      $("#deliveryTable tbody").on("click", "tr", function () {
-        $(this).toggleClass("selected");
-      });
-      $("#clearDelivery").click(function () {
-        // Identify correct staff member by matching their unique email to the selected user.
-        $("#deliveryTable .selected").each(function () {
-          let telephone = $(this).find("td:eq(3)").text();
-          const deliveryDriver = deliveryDrivers.find(
-            (deliveryDriver) => deliveryDriver.telephone === telephone
-          );
+function clearDelivery() {
+$("#deliveryTable .selected").each(function () {
+  let telephone = $(this).find("td:eq(3)").text();
+  const deliveryDriver = deliveryDrivers.find((deliveryDriver) => deliveryDriver.telephone === telephone);
 
-          if (
-            confirm("Are you sure you want to remove this delivery driver?")
-          ) {
-            $("tr").filter(".selected").remove();
-            deliveryDriver.deliveryDrivers = deliveryDriver;
-          } else {
-            $(this).removeClass("selected");
-          }
-        });
-      });
+  if (confirm("Are you sure you want to remove this delivery driver?")) {
+    $("tr").filter(".selected").remove();                     //Remove row from users view
+   // var indexSelected = deliveryDrivers.indexOf(deliveryDriver);      //Remove row from object
+    deliveryDrivers.splice(deliveryDriver);
+    console.log(deliveryDrivers);
+  } else {
+    $(this).removeClass("selected");
     }
+  });
+}
+
+console.log(deliveryDrivers);
+
+$("document").ready(function () {
+  staffUserGet();
+
+  setInterval(function () {
+    $("#date").text(digitalClock("time"));
+  }, 1000);
+
+  $("#staffTable tbody").on("click", "tr", function () {
+    $(this).toggleClass("selected");
+  });
+
+  $("#staffOut").click(function () {
+    staffOut();
+  });
+
+  $("#staffIn").click(function () {
+    staffIn();
+  });
+
+  $("#addDelivery").click(function () {
+    addDelivery();
+  });
+      
+  $("#deliveryTable tbody").on("click", "tr", function () {
+    $(this).toggleClass("selected");
+  });
+      
+  $("#clearDelivery").click(function () {
+    clearDelivery();
   });
 });
