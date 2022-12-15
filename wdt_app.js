@@ -125,7 +125,7 @@ $("#staffTable .selected").each(function(){
   const staffMember =  staffMembers.find(staffMember => staffMember.email === email);
 
     //Update status in table and in object
-    staffMember.status = $(this).find("td:eq(4)").text("Out");
+    staffMember.status = $(this).find("td:eq(4)").text("Out").text();
 
     // Prompt the user for the time.
     let leaveT = prompt("Enter the time (hh:mm):");
@@ -133,7 +133,7 @@ $("#staffTable .selected").each(function(){
     //If statement to validate time
       if (leaveT.match(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/)) {
       // If time is in correct format.
-      staffMember.outTime = $(this).find("td:eq(5)").text(leaveT);
+      staffMember.outTime = $(this).find("td:eq(5)").text(leaveT).text();
        // Promt user for the duration in minutes
     let durationMinutes = prompt(`How many minutes will ${staffMember.name} be out?`);
 
@@ -152,7 +152,7 @@ $("#staffTable .selected").each(function(){
       
 
         // Populate table with duration staff member is away
-        staffMember.duration = $(this).find("td:eq(6)").text(durationT);
+        staffMember.duration = $(this).find("td:eq(6)").text(durationT).text();
         
   
         $(this).find("td:eq(6)").text(durationT);
@@ -172,7 +172,7 @@ $("#staffTable .selected").each(function(){
         // Add time staff member is expected to return
         let returnT = hours + ":" + minutes;
        
-        staffMember.expectedReturnTime = $(this).find("td:eq(7)").text(returnT);
+        staffMember.expectedReturnTime = $(this).find("td:eq(7)").text(returnT).text();
     
         
         let returntTime = $(this).find("td:eq(7)").text(returnT);
@@ -180,7 +180,7 @@ $("#staffTable .selected").each(function(){
         $(this).removeClass("selected");
       } else if (durationMinutes < 60) {
          // Populate table with duration staff member is away
-         staffMember.duration = $(this).find("td:eq(6)").text(durationMinutes);
+         staffMember.duration = $(this).find("td:eq(6)").text(durationMinutes).text();
         
   
          $(this).find("td:eq(6)").text(durationMinutes);
@@ -201,7 +201,7 @@ $("#staffTable .selected").each(function(){
          // Add time staff member is expected to return
          let returnT = hours + ":" + minutes;
         
-         staffMember.expectedReturnTime = $(this).find("td:eq(7)").text(returnT);
+         staffMember.expectedReturnTime = $(this).find("td:eq(7)").text(returnT).text();
      
          
          $(this).find("td:eq(7)").text(returnT);
@@ -214,16 +214,33 @@ $("#staffTable .selected").each(function(){
 
       // Prompt the user again for the time.
       leaveT = prompt("Enter the time (hh:mm):");
-      staffMember.outTime = $(this).find("td:eq(5)").text(leaveT);
+      staffMember.outTime = $(this).find("td:eq(5)").text(leaveT).text();
   }
+
+  var toastShown = false;  // variable to track whether the toast has been shown
   let lateStaffMember =  staffMembers.find(staffMember => staffMember.expectedReturnTime);
-  console.log(lateStaffMember);
-  let lateStaff = lateStaffMember.expectedReturnTime;
-  if(lateStaff > digitalClock("currentTime")){
-  staffMember.staffMemberIsLate();
-  console.log(lateStaff);
-  console.log(digitalClock("currentTime"));
+    let expected = staffMember.expectedReturnTime;
+    
+    let duration = staffMember.duration;
+    console.log(duration);
+    let durationlateStaffMember =  staffMembers.find(staffMember => staffMember.duration);
+    console.log(durationlateStaffMember);
+    let lateStaff = lateStaffMember.expectedReturnTime;
+function showReturnToast() {
+  // check if the toast has already been shown
+  if (toastShown) {
+    return;  // do nothing if the toast has already been shown
   }
+
+  // check if the current time is past the estimated return time
+  if (digitalClock("currentTime") > expected){
+       staffMember.staffMemberIsLate();
+    // set the toastShown variable to true to prevent the toast from being shown again
+    toastShown = true;
+  }
+}
+setInterval(showReturnToast, 1000);
+
 });
 }
 
