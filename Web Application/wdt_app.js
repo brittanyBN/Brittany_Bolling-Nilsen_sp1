@@ -275,7 +275,7 @@ function addDelivery() {
       );
   }
   const latedeliveryDriver = deliveryDrivers.find((latedeliveryDriver) => latedeliveryDriver.telephone === telephone);
-      var driverToast = false;  // variable to track whether the toast has been shown
+      var driverToast = false;  
       let expected = latedeliveryDriver.returnTime;
       console.log(expected);
 
@@ -300,8 +300,9 @@ $("#deliveryTable .selected").each(function () {
 
   if (confirm("Are you sure you want to remove this delivery driver?")) {
     $("tr").filter(".selected").remove();                             //Remove row from users view
-    var indexSelected = deliveryDrivers.indexOf(deliveryDriver);      //Remove row from object
-    deliveryDrivers.splice(deliveryDriver);
+    var indexSelected = deliveryDrivers.indexOf(deliveryDriver .selected);      //Remove row from object
+    deliveryDrivers.splice(indexSelected);
+    console.log(deliveryDrivers);
   } else {
     $(this).removeClass("selected");
     }
