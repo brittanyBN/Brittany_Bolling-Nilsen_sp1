@@ -18,8 +18,9 @@ class StaffMember extends Employee {
   staffMemberIsLate() {
     $("#toastInfo").append(
       `<p><img src='${this.picture}' height='50px' width='50px' alt='staff picture'></p>
-      <p>Staff Member: ${this.name} ${this.surname}</p>
-      <p>Duration Out: ${this.duration}</p>`
+      <p><strong>Staff Member:</strong> ${this.name} ${this.surname}</p>
+      <p<strong>Duration Out:</strong> ${this.duration}</p>
+      <br>`
     )
     $("#liveToast").toast("show")
     }
@@ -35,10 +36,11 @@ class DeliveryDriver extends Employee {
   }
     deliveryDriverIsLate() {
     $("#toastDriverInfo").append(
-      `<p>Staff Member: ${this.name} ${this.surname}</p>
-       <p>Staff Member Telephone: ${this.telephone}</p>
-       <p>Delivery Addresst: ${this.deliverAddress}</p>
-       <p>Expected Return Time: ${this.returnTime}</p>`
+      `<p><strong>Staff Member:</strong> ${this.name} ${this.surname}</p>
+       <p><strong>Staff Member Telephone:</strong>${this.telephone}</p>
+       <p><strong>Delivery Addresst:</strong> ${this.deliverAddress}</p>
+       <p><strong>Expected Return Time:</strong> ${this.returnTime}</p>
+       <br>`
     )
     $("#liveToastDriver").toast("show")
   }
@@ -148,14 +150,13 @@ function staffOut() {
         returnMinute = "0" + returnMinute;
       }
       const hourValidate = parseInt(returnHour);
-      console.log(hourValidate);
       const minuteValidate = parseInt(returnMinute);
-      console.log(minuteValidate);
 
       if(hourValidate > 23 || minuteValidate > 59) {
         alert("Please enter a valid number of minutes.");
         staffMember.outTime = $(this).find("td:eq(5)").text("").text();
         staffMember.status = $(this).find("td:eq(4)").text("In").text();
+        $(this).removeClass("selected");
       return;
       }
 
@@ -166,6 +167,7 @@ function staffOut() {
       $(this).removeClass("selected");
     } if (isNaN(durationOut) === true || durationOut <= 0) {
       alert("Please enter a valid number of minutes.");
+      $(this).removeClass("selected");
       return;
     }
       var toastShown = false;  // variable to track whether the toast has been shown
@@ -174,8 +176,7 @@ function staffOut() {
     function showReturnToast() {
       if (toastShown) {
        return;  
-      }
-      if (digitalClock("currentTime") > expected){
+      } else if (digitalClock("currentTime") > expected){
         staffMember.staffMemberIsLate();
         toastShown = true;
       }
@@ -194,7 +195,6 @@ $("#staffTable .selected").each(function () {
   staffMember.leave = $(this).find("td:eq(5)").text("");
   staffMember.duration = $(this).find("td:eq(6)").text("");
   staffMember.returnT = $(this).find("td:eq(7)").text("");
- 
   $(this).removeClass("selected");
 });
 }
@@ -273,23 +273,19 @@ function addDelivery() {
           `${returnTime}` +
           "</td></tr>"
       );
-  }
-  const latedeliveryDriver = deliveryDrivers.find((latedeliveryDriver) => latedeliveryDriver.telephone === telephone);
-      var driverToast = false;  
-      let expected = latedeliveryDriver.returnTime;
-      console.log(expected);
+      let driverToast = false;  
+      let expectedReturn = `${returnTime}`;
 
     function showLateDriver() {
       if (driverToast) {
        return;  
-      }
-      if (digitalClock("currentTime") > expected){
-        latedeliveryDriver.deliveryDriverIsLate();
-        driverToast = true;
-        
+      } else if (digitalClock("currentTime") > expectedReturn) {
+        newDeliveryDriver.deliveryDriverIsLate();
+        driverToast = true; 
       }
     }
     setInterval(showLateDriver, 1000);
+  }
   });
 }
 
