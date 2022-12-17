@@ -75,6 +75,10 @@ table {
   background-color: #83d1e1;
 }
 
+.button-container {
+  display: flex;
+}
+
 #staffIn {
   background-color: #198754;
   color: #fff;
@@ -82,12 +86,15 @@ table {
   margin-left: 1250px;
   display: flex;
   justify-content: flex-end;
+  flex: 0 0 auto;
+  margin-left: auto;
 }
 
 #staffOut {
   background-color: #dc3545;
   color: #fff;
   font-family: Consolas, "Courier New", monospace;
+  flex: 0 0 auto;
 }
 
 #addDelivery {
@@ -112,8 +119,17 @@ table {
 
 #deliveryT tr:hover {
   background-color: #0e8ea8;
+  cursor: pointer;
 }
 
 #deliveryT {
   background-color: #83d1e1;
+}
+
+.toast-container {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
 }

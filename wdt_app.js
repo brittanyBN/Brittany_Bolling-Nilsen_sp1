@@ -16,8 +16,6 @@ class StaffMember extends Employee {
     this.expectedReturnTime = "";
   }
   staffMemberIsLate() {
-    // var time = new Date();
-    // if(this.expectedReturnTime > time) {
     $("#toastInfo").append(
       `<p><img src='${this.picture}' height='50px' width='50px' alt='staff picture'></p>
       <p>Staff Member: ${this.name} ${this.surname}</p>
@@ -25,8 +23,8 @@ class StaffMember extends Employee {
     )
     $("#liveToast").toast("show")
     }
-  //}
-}
+  }
+
 class DeliveryDriver extends Employee {
   constructor(vehicle, name, surname, telephone, deliverAddress, returnTime) {
     super(name, surname);
@@ -35,8 +33,14 @@ class DeliveryDriver extends Employee {
     this.deliverAddress = deliverAddress;
     this.returnTime = returnTime;
   }
-  deliveryDriverIsLate() {
-    return `${this.name} is late. Show a toast`;
+    deliveryDriverIsLate() {
+    $("#toastDriverInfo").append(
+      `<p>Staff Member: ${this.name} ${this.surname}</p>
+       <p>Staff Member Telephone: ${this.telephone}</p>
+       <p>Delivery Addresst: ${this.deliverAddress}</p>
+       <p>Expected Return Time: ${this.returnTime}</p>`
+    )
+    $("#liveToastDriver").toast("show")
   }
 }
 
@@ -119,131 +123,54 @@ function digitalClock(type) {
 }
 
 function staffOut() {
-$("#staffTable .selected").each(function(){
-  let email = $(this).find("td:eq(3)").text();
- 
-  const staffMember =  staffMembers.find(staffMember => staffMember.email === email);
+  $("#staffTable .selected").each(function(){
+    let email = $(this).find("td:eq(3)").text();
+    const staffMember =  staffMembers.find(staffMember => staffMember.email === email);
+    let durationOut = prompt(`How many minutes will ${staffMember.name} be out for?`);
+    if(isNaN(durationOut) === false && durationOut >= 1) {
+      staffMember.status = $(this).find("td:eq(4)").text("Out").text();
+      staffMember.outTime = $(this).find("td:eq(5)").text(digitalClock("currentTime")).text();
 
-    //Update status in table and in object
-    staffMember.status = $(this).find("td:eq(4)").text("Out").text();
+      let outTime = digitalClock("currentTime").split(":");
+      let outHour = parseInt(outTime[0]);
+      let outMinute = parseInt(outTime[1]);
 
-    // Prompt the user for the time.
-    let leaveT = prompt("Enter the time (hh:mm):");
+      let durationHours = Math.floor(durationOut / 60);
+      let durationMin = durationOut % 60;
 
-    //If statement to validate time
-      if (leaveT.match(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/)) {
-      // If time is in correct format.
-      staffMember.outTime = $(this).find("td:eq(5)").text(leaveT).text();
-       // Promt user for the duration in minutes
-    let durationMinutes = prompt(`How many minutes will ${staffMember.name} be out?`);
+      let returnHour = durationHours + outHour;
+      let returnMinute = durationMin + outMinute;
 
-    // If the user input an invalid number of minutes
-    if (isNaN(durationMinutes) === true || durationMinutes <= 0) {
-      alert("Please enter a valid number of minutes!");
-      prompt(`How many minutes will ${staffMember.name} be out?`);
+      if(returnHour < 10) {
+        returnHour = "0" + returnHour;
+      }
 
-      // If the user input a valid number of minutes
-    } else if (isNaN(durationMinutes) !== true && durationMinutes > 0) {
-      if (durationMinutes >= 60) {
-        // Calculate number of hours and minutes staff member is away
-        let durationHours = Math.floor(durationMinutes / 60);
-        let durationMin = durationMinutes % 60;
-        let durationT = durationHours + "hr " + durationMin + "min";
-      
+      if(returnMinute < 10) {
+        returnMinute = "0" + returnMinute;
+      }
 
-        // Populate table with duration staff member is away
-        staffMember.duration = $(this).find("td:eq(6)").text(durationT).text();
-        
-  
-        $(this).find("td:eq(6)").text(durationT);
-        let arrayLeaveT = leaveT.split(":");
-       
-        let hours = parseInt(arrayLeaveT[0]) + parseInt(durationHours);
-        if (hours > 23) {
-          prompt("Please enter a valid time!");
-        }
-      
-        let minutes = parseInt(arrayLeaveT[1]) + parseInt(durationMin);
-        if (minutes < 10) {
-          minutes = "0" + minutes;
-        }
-       
-
-        // Add time staff member is expected to return
-        let returnT = hours + ":" + minutes;
-       
-        staffMember.expectedReturnTime = $(this).find("td:eq(7)").text(returnT).text();
+      let durationT = durationHours + " hr " + durationMin + " min";
+      staffMember.duration = $(this).find("td:eq(6)").text(durationT).text();
+      staffMember.expectedReturnTime = $(this).find("td:eq(7)").text(returnHour + ":" + returnMinute).text();
+      $(this).removeClass("selected");
+    } else if (isNaN(durationOut) || true && durationOut <= 0) {
+      alert("Please enter a valid number of minutes.");
+    }
+      var toastShown = false;  // variable to track whether the toast has been shown
+      let expected = staffMember.expectedReturnTime;
     
-        
-        let returntTime = $(this).find("td:eq(7)").text(returnT);
-        console.log(returntTime);
-        $(this).removeClass("selected");
-      } else if (durationMinutes < 60) {
-         // Populate table with duration staff member is away
-         staffMember.duration = $(this).find("td:eq(6)").text(durationMinutes).text();
-        
-  
-         $(this).find("td:eq(6)").text(durationMinutes);
-         let arrayLeaveT = leaveT.split(":");
-        
-         let hours = parseInt(arrayLeaveT[0])
-        //  let hours = parseInt(arrayLeaveT[0]) + parseInt(durationHours);
-        //  if (hours > 23) {
-        //    prompt("Please enter a valid time!");
-        //  }
-       
-         let minutes = parseInt(arrayLeaveT[1]) + parseInt(durationMinutes);
-         if (minutes < 10) {
-           minutes = "0" + minutes;
-         }
-        
- 
-         // Add time staff member is expected to return
-         let returnT = hours + ":" + minutes;
-        
-         staffMember.expectedReturnTime = $(this).find("td:eq(7)").text(returnT).text();
-     
-         
-         $(this).find("td:eq(7)").text(returnT);
-         $(this).removeClass("selected");
+    function showReturnToast() {
+      if (toastShown) {
+       return;  
+      }
+      if (digitalClock("currentTime") > expected){
+        staffMember.staffMemberIsLate();
+        toastShown = true;
       }
     }
-  } else {
-      // If time is not in correct format.
-      alert("Please enter the time in the correct format (hh:mm)");
-
-      // Prompt the user again for the time.
-      leaveT = prompt("Enter the time (hh:mm):");
-      staffMember.outTime = $(this).find("td:eq(5)").text(leaveT).text();
-  }
-
-  var toastShown = false;  // variable to track whether the toast has been shown
-  let lateStaffMember =  staffMembers.find(staffMember => staffMember.expectedReturnTime);
-    let expected = staffMember.expectedReturnTime;
-    
-    let duration = staffMember.duration;
-    console.log(duration);
-    let durationlateStaffMember =  staffMembers.find(staffMember => staffMember.duration);
-    console.log(durationlateStaffMember);
-    let lateStaff = lateStaffMember.expectedReturnTime;
-function showReturnToast() {
-  // check if the toast has already been shown
-  if (toastShown) {
-    return;  // do nothing if the toast has already been shown
-  }
-
-  // check if the current time is past the estimated return time
-  if (digitalClock("currentTime") > expected){
-       staffMember.staffMemberIsLate();
-    // set the toastShown variable to true to prevent the toast from being shown again
-    toastShown = true;
-  }
-}
 setInterval(showReturnToast, 1000);
-
-});
+  })
 }
-
 
 function staffIn() {
 $("#staffTable .selected").each(function () {
@@ -283,7 +210,6 @@ function addDelivery() {
       } else if (vehicle === "motorcycle") {
         vehicleIcon = '<i class="bi bi-bicycle"></i>';
       }
-    });
     if (name == "" || regName.test(name)) {
       alert("Please enter your name properly.");
       error++;
@@ -336,7 +262,23 @@ function addDelivery() {
           "</td></tr>"
       );
   }
-  console.log(deliveryDrivers);
+  const latedeliveryDriver = deliveryDrivers.find((latedeliveryDriver) => latedeliveryDriver.telephone === telephone);
+      var driverToast = false;  // variable to track whether the toast has been shown
+      let expected = latedeliveryDriver.returnTime;
+      console.log(expected);
+
+    function showLateDriver() {
+      if (driverToast) {
+       return;  
+      }
+      if (digitalClock("currentTime") > expected){
+        latedeliveryDriver.deliveryDriverIsLate();
+        driverToast = true;
+        
+      }
+    }
+    setInterval(showLateDriver, 1000);
+  });
 }
 
 function clearDelivery() {
@@ -345,17 +287,14 @@ $("#deliveryTable .selected").each(function () {
   const deliveryDriver = deliveryDrivers.find((deliveryDriver) => deliveryDriver.telephone === telephone);
 
   if (confirm("Are you sure you want to remove this delivery driver?")) {
-    $("tr").filter(".selected").remove();                     //Remove row from users view
-   // var indexSelected = deliveryDrivers.indexOf(deliveryDriver);      //Remove row from object
+    $("tr").filter(".selected").remove();                             //Remove row from users view
+    var indexSelected = deliveryDrivers.indexOf(deliveryDriver);      //Remove row from object
     deliveryDrivers.splice(deliveryDriver);
-    console.log(deliveryDrivers);
   } else {
     $(this).removeClass("selected");
     }
   });
 }
-
-console.log(deliveryDrivers);
 
 $("document").ready(function () {
   staffUserGet();
