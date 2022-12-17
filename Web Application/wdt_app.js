@@ -143,18 +143,30 @@ function staffOut() {
 
       if(returnHour < 10) {
         returnHour = "0" + returnHour;
-      }
-
+      } 
       if(returnMinute < 10) {
         returnMinute = "0" + returnMinute;
+      }
+      const hourValidate = parseInt(returnHour);
+      console.log(hourValidate);
+      const minuteValidate = parseInt(returnMinute);
+      console.log(minuteValidate);
+
+      if(hourValidate > 23 || minuteValidate > 59) {
+        alert("Please enter a valid number of minutes.");
+        staffMember.outTime = $(this).find("td:eq(5)").text("").text();
+        staffMember.status = $(this).find("td:eq(4)").text("In").text();
+      return;
       }
 
       let durationT = durationHours + " hr " + durationMin + " min";
       staffMember.duration = $(this).find("td:eq(6)").text(durationT).text();
       staffMember.expectedReturnTime = $(this).find("td:eq(7)").text(returnHour + ":" + returnMinute).text();
+  
       $(this).removeClass("selected");
-    } else if (isNaN(durationOut) || true && durationOut <= 0) {
+    } if (isNaN(durationOut) === true || durationOut <= 0) {
       alert("Please enter a valid number of minutes.");
+      return;
     }
       var toastShown = false;  // variable to track whether the toast has been shown
       let expected = staffMember.expectedReturnTime;

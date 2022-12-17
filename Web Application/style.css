@@ -20,7 +20,7 @@ body {
   color: #212529;
 }
 
-a:visited {
+.nav-link {
   color: #fff;
 }
 
@@ -83,11 +83,12 @@ table {
   background-color: #198754;
   color: #fff;
   font-family: Consolas, "Courier New", monospace;
-  margin-left: 1250px;
-  display: flex;
-  justify-content: flex-end;
   flex: 0 0 auto;
   margin-left: auto;
+}
+
+#staffIn:hover {
+  background-color: #425d50;
 }
 
 #staffOut {
@@ -97,20 +98,33 @@ table {
   flex: 0 0 auto;
 }
 
+#staffOut:hover {
+  background-color: #8a4950;
+}
+
 #addDelivery {
   background-color: #198754;
   color: #fff;
   font-family: Consolas, "Courier New", monospace;
+  float: right;
 }
 
+#addDelivery:hover {
+  background-color: #425d50;
+}
 #clearDelivery {
   background-color: #dc3545;
   color: #fff;
   font-family: Consolas, "Courier New", monospace;
+  float: right;
 }
 
+#clearDelivery:hover {
+  background-color: #8a4950;
+}
 #date {
   text-align: right;
+  margin-top: 50px;
 }
 
 .selected {
@@ -132,4 +146,8 @@ table {
   width: 100%;
   display: flex;
   flex-direction: row;
+}
+
+.button-container {
+  display: flex; 
 }

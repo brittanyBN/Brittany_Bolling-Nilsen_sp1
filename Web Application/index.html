@@ -7,7 +7,6 @@
       crossorigin="anonymous">
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css"/>
-    <script src="jquery-3.6.0.js"></script>
   </head>
   <body>
     <div class="container-sm">
@@ -15,23 +14,10 @@
         <div class="row">
           <ul id="navbar" class="nav nav-pills">
             <li class="nav-item">
-              <a
-                id="navbarHeader"
-                class="nav-link active"
-                aria-current="page"
-                href="#"
-                >Dashboard</a
-              >
+              <a id="navbarHeader" class="nav-link active" aria-current="page" href="#">Dashboard</a>
             </li>
             <li id="navbarHeader" class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                data-bs-toggle="dropdown"
-                href="#"
-                role="button"
-                aria-expanded="false"
-                >Inventory</a
-              >
+              <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Inventory</a>
               <ul id="navbarItem" class="dropdown-menu">
                 <li><a class="dropdown-item" href="#">Search</a></li>
                 <li><a class="dropdown-item" href="#">Add</a></li>
@@ -39,14 +25,7 @@
               </ul>
             </li>
             <li id="navbarHeader" class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                data-bs-toggle="dropdown"
-                href="#"
-                role="button"
-                aria-expanded="false"
-                >Orders</a
-              >
+              <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Orders</a>
               <ul id="navbarItem" class="dropdown-menu">
                 <li><a class="dropdown-item" href="#">Search</a></li>
                 <li><a class="dropdown-item" href="#">Add</a></li>
@@ -62,7 +41,7 @@
         <div class="row">
           <figure>
             <div class="justify-content-left">
-              <img id="logo" width="250px"; height="100px"; src="/Users/brittanybolling/Dropbox/My Mac (brittanys-mbp)/Desktop/Semester One Project/Company logo.png" alt="WeDeliverTECH Company Logo"/>
+              <img id="logo" width="250px"; height="100px"; src="/Users/brittanybolling/Dropbox/My Mac (brittanys-mbp)/Desktop/Semester One Project/Web Application/Company logo.png" alt="WeDeliverTECH Company Logo"/>
             </div>
           </figure>
         </div>
@@ -92,8 +71,8 @@
         </div>
       </div>
     </div>
-    <button id="staffOut" type="button" data-inline="true" class="btn justify-content-start">Out</button>
-    <button id="staffIn" type="button" data-inline="true" class="btn justify-content-end">In</button>
+    <div class="button-container"><button id="staffOut" type="button" data-inline="true" class="btn justify-content-start">Out</button>
+    <button id="staffIn" type="button" data-inline="true" class="btn justify-content-end">In</button></div>
     <h2>Schedule Delivery</h2>
     <div class="row">
       <form action="" method="post" class="deliveryInput" onsubmit="return deliveryInput()" name="deliveryForm">
@@ -125,16 +104,14 @@
               <input type="text" name="address" id="address" placeholder="Delivery address" required/>
             </td>
             <td>
-              <input type="time" name="returnTime" id="returnTimeNow" placeholder="Driver return time" required/>
+              <input type="time" name="returnTime" id="returnTimeNow" placeholder="Driver return time" pattern="[0-9]{2}:[0-9]{2}" required/>
             </td>
           </tbody>
         </table>
       </form>
     </div>
-    <button id="addDelivery" type="button" value="submit" class="btn">
-      Add
-    </button>
-    <br />
+    <button id="addDelivery" type="button" value="submit" class="btn">Add</button>
+    <br/>
     <h2>Delivery Board</h2>
     <div class="row">
       <table id="deliveryTable" class="table table-bordered">
