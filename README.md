@@ -2,7 +2,7 @@
 
 ## Purpose of Project
 
-This project was created for the WeDeliverTECH™ company. The purpose of this app is to assist a receptionist in checking staff members in and out, 
+This project was created as a semester project for Noroff. The purpose of this app is to assist a receptionist in checking staff members in and out, 
 logging deliveries, and keeping track of any late employees. 
 
 ## Usage
